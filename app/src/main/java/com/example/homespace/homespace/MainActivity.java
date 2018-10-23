@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,10 +18,12 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText editTextUsername, editTextPassword;
+    private EditText editTextUsername, editTextPassword, editTextConfirmPW;
     private ProgressBar progressBarLogin;
-
+    private TextView textViewShowLogin, textViewShowRegister;
     private FirebaseAuth mAuth;
+
+    private final String FAKE_EMAIL_DOMAIN = "@superfakeemaildomain.netcom";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +34,18 @@ public class MainActivity extends AppCompatActivity {
         progressBarLogin.setVisibility(View.INVISIBLE);
         editTextUsername = findViewById(R.id.usernameEditText);
         editTextPassword = findViewById(R.id.passwordEditText);
+        editTextConfirmPW = findViewById(R.id.confirmPasswordEditText);
+        textViewShowLogin = findViewById(R.id.returningUserTextView);
+        textViewShowRegister = findViewById(R.id.signUpTextView);
 
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
+                userLogin(username, password);
             }
         });
 
@@ -49,11 +56,26 @@ public class MainActivity extends AppCompatActivity {
                 createUser();
             }
         });
+
+        textViewShowLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginForm();
+            }
+        });
+
+        textViewShowRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRegisterForm();
+            }
+        });
     }
 
     private void createUser() {
         final String username = editTextUsername.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
+        final String passwordConfirm = editTextConfirmPW.getText().toString().trim();
 
         if (username.isEmpty()) {
             editTextUsername.setError("Username Required");
@@ -73,7 +95,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        if (!password.equals(passwordConfirm)){
+            editTextConfirmPW.setError("Passwords do not match");
+            editTextConfirmPW.requestFocus();
+            return;
+        }
+
         progressBarLogin.setVisibility(View.VISIBLE);
+
         mAuth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -111,11 +140,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startHomeActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, MainNavigationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
     }
 
 
+    private void showLoginForm() {
+        editTextConfirmPW.setVisibility(View.INVISIBLE);
+        textViewShowLogin.setVisibility(View.INVISIBLE);
+        findViewById(R.id.registerButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.loginButton).setVisibility(View.VISIBLE);
+        textViewShowRegister.setVisibility(View.VISIBLE);
+
+    }
+
+    private void showRegisterForm() {
+        editTextConfirmPW.setVisibility(View.VISIBLE);
+        textViewShowLogin.setVisibility(View.VISIBLE);
+        findViewById(R.id.registerButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.loginButton).setVisibility(View.INVISIBLE);
+        textViewShowRegister.setVisibility(View.INVISIBLE);
+    }
 }
