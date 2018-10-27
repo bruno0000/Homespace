@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         progressBarLogin = findViewById(R.id.loginProgressBar);
         progressBarLogin.setVisibility(View.INVISIBLE);
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createUser() {
-        final String username = editTextUsername.getText().toString().trim();
+        final String username = editTextUsername.getText().toString().trim() + FAKE_EMAIL_DOMAIN;
         final String password = editTextPassword.getText().toString().trim();
         final String passwordConfirm = editTextConfirmPW.getText().toString().trim();
 
@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    // TODO: Verify current user so they skip the creating homespace activity
     private void userLogin(String username, String password) {
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -138,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void startHomespaceActivity() {
         Intent intent = new Intent(this, HomespaceActivity.class);
