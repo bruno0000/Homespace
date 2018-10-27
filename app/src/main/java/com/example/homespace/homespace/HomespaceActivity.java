@@ -18,12 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HomespaceActivity extends AppCompatActivity {
-    private final String LOG_TAG = "homespacerooni";
+    private final String LOG_TAG = "HomespaceActivity";
 
     private static final String KEY_HOMESPACE_NAME = "homespaceName";
     private static final String KEY_HOMESPACE_CREATOR = "homespaceCreator";
 
-    private EditText editTextName;
+    private EditText mEditTextName;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -32,11 +32,11 @@ public class HomespaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homespace);
 
-        editTextName = findViewById(R.id.nameHomespaceEditText);
+        mEditTextName = findViewById(R.id.nameHomespaceEditText);
     }
 
     public void saveHomespace(View view) {
-        String name = editTextName.getText().toString();
+        String name = mEditTextName.getText().toString();
         String creator = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Map<String, Object> homespace = new HashMap<>();
@@ -55,14 +55,14 @@ public class HomespaceActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(HomespaceActivity.this, "Error", Toast.LENGTH_SHORT).show();
-
+                        //TODO: Remove before hand in
                         Log.d(LOG_TAG, e.toString());
                     }
                 });
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, MainNavigationActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
