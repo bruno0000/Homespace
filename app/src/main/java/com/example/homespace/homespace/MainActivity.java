@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
+        ITaskFragment {
 
 
     @Override
@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    private boolean loadFragment(Fragment fragment){
-        if (fragment != null){
+    private boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment).commit();
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         Fragment fragment = null;
 
-        switch (menuItem.getItemId()){
+        switch (menuItem.getItemId()) {
 
             case R.id.navigation_home:
                 fragment = new HomeFragment();
@@ -58,4 +58,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         return loadFragment(fragment);
     }
+
+    @Override
+    public void createNewTask(String title, String description) {
+
+    }
+
 }
