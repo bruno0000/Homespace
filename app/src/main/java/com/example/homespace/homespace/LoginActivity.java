@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -33,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private final String FAKE_EMAIL_DOMAIN = "@superfakeemaildomain.netcom";
-    private final String LOG_TAG = "LoginActivityLOGTAG";
+    private final String TAG = "LoginActivityLOGTAG";
     private final String KEY_USERNAME = "username";
     private final String KEY_USER_ID = "userID";
     private final String KEY_HOMESPACE_ID = "homespaceID";
@@ -84,6 +85,22 @@ public class LoginActivity extends AppCompatActivity {
                 showRegisterForm();
             }
         });
+
+        // check if user is currently logged in
+        checkUserState();
+    }
+
+    private void checkUserState(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        } else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
     }
 
     private void createUser() {
@@ -161,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
 
                         //TODO: Remove before hand in
-                        Log.d(LOG_TAG, e.toString());
+                        Log.d(TAG, e.toString());
                     }
                 });
     }
@@ -173,9 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             startHomespaceActivity();
-
                         } else {
                             mProgressBarLogin.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this,
@@ -184,7 +199,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
     // Sends user to activity for creating or joining a homespace
     private void startHomespaceActivity() {

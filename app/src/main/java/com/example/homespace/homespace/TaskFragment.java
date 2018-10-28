@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class TaskFragment extends Fragment implements View.OnClickListener {
+public class TaskFragment extends Fragment {
 
     private static final String TAG = "TaskFragment";
 
@@ -29,17 +29,23 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
             }
         });
+
+
+        v.findViewById(R.id.newTaskFloatingActionButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /*
+                NewTaskDialog dialog = new NewTaskDialog();
+                dialog.show(getActivity().getSupportFragmentManager(), "newTaskDialog . show");
+*/
+
+                Intent intent = new Intent(getActivity(), NewTaskActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
         return v;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.newTaskFloatingActionButton: {
-                NewTaskDialog dialog = new NewTaskDialog();
-                dialog.show(getActivity().getSupportFragmentManager(), getString(R.string.dialog_new_task));
-                break;
-            }
-        }
-    }
 }

@@ -12,20 +12,22 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class HomespaceActivity extends AppCompatActivity {
-    private final String LOG_TAG = "HomespaceActivity";
+    private static final String KEY_HOMESPACE_ID = "homespaceID";
+    private final String LOG = "HomespaceActivity";
 
     private static final String KEY_HOMESPACE_NAME = "homespaceName";
     private static final String KEY_HOMESPACE_CREATOR = "homespaceCreator";
 
     private EditText mEditTextName;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +41,15 @@ public class HomespaceActivity extends AppCompatActivity {
         String name = mEditTextName.getText().toString();
         String creator = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Map<String, Object> homespace = new HashMap<>();
-        homespace.put(KEY_HOMESPACE_NAME, name);
-        homespace.put(KEY_HOMESPACE_CREATOR, creator);
+        db = FirebaseFirestore.getInstance();
+
+        DocumentReference homespaceRef = db.collection("homespaces").document();
+
+        Homespace homespace = new Homespace();
+
+        homespace.setHomespaceCreatorID(creator);
+        homespace.setHomespaceID(homespaceRef.getId());
+        homespace.setHomespaceName(name);
 
         db.collection("homespaces").document().set(homespace)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -56,7 +64,7 @@ public class HomespaceActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(HomespaceActivity.this, "Error", Toast.LENGTH_SHORT).show();
                         //TODO: Remove before hand in
-                        Log.d(LOG_TAG, e.toString());
+                        Log.d(LOG, e.toString());
                     }
                 });
     }
