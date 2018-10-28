@@ -22,9 +22,9 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.newTaskFloatingActionButton: {
-
                 NewTaskDialog dialog = new NewTaskDialog();
-                dialog.show(getFragmentManager().beginTransaction(), getString(R.string.dialog_new_task));
+                dialog.show(getActivity().getSupportFragmentManager(), getString(R.string.dialog_new_task));
+                break;
             }
         }
     }
