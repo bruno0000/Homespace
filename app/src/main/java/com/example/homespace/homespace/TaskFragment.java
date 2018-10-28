@@ -1,5 +1,6 @@
 package com.example.homespace.homespace;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,15 +17,18 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         return inflater.inflate(R.layout.fragment_tasks, null);
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.newTaskFloatingActionButton: {
-
                 NewTaskDialog dialog = new NewTaskDialog();
-                dialog.show(getFragmentManager().beginTransaction(), getString(R.string.dialog_new_task));
+                dialog.show(getActivity().getSupportFragmentManager(), getString(R.string.dialog_new_task));
+                break;
             }
         }
     }
