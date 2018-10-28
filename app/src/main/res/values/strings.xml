@@ -7,4 +7,6 @@
     <string name="title_home">Home</string>
     <string name="title_tasks">Tasks</string>
     <string name="title_finances">Finances</string>
+    <string name="button_date_picker">Pick Date</string>
+    <string name="button_time_picker">Pick Time \nof Day</string>
 </resources>

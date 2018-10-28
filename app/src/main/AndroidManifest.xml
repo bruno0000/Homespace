@@ -20,7 +20,6 @@
         <activity
             android:name=".MainNavigationActivity"
             android:label="@string/title_activity_main_navigation"></activity>
-        <activity android:name=".CalendarActivity"></activity>
     </application>
 
 </manifest>

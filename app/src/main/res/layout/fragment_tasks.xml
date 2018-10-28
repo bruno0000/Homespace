@@ -9,20 +9,36 @@
         android:id="@+id/textViewTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="448dp"
         android:text="tasks"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonTestCalendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="68dp"
-        android:text="Button"
+        android:id="@+id/buttonDatePicker"
+        android:layout_width="172dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="104dp"
+        android:background="@color/colorButtonPrimary"
+        android:text="@string/button_date_picker"
+        android:textColor="@color/colorBackground"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonTimePicker"
+        android:layout_width="172dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="236dp"
+        android:background="@color/colorButtonPrimary"
+        android:text="@string/button_time_picker"
+        android:textColor="@color/colorBackground"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
