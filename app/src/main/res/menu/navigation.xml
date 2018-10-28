@@ -8,12 +8,12 @@
 
     <item
         android:id="@+id/navigation_tasks"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:icon="@drawable/ic_tasks_unbordered"
+        android:title="@string/title_tasks" />
 
     <item
         android:id="@+id/navigation_finances"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_notifications" />
+        android:icon="@drawable/ic_finance"
+        android:title="@string/title_finances" />
 
 </menu>

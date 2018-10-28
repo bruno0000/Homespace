@@ -1,5 +1,6 @@
 package com.example.homespace.homespace;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +42,11 @@ public class NewTaskDialog extends DialogFragment implements View.OnClickListene
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.newTaskDialogCreateTextView: {
@@ -54,7 +60,6 @@ public class NewTaskDialog extends DialogFragment implements View.OnClickListene
                     getDialog().dismiss();
                 } else {
                     Toast.makeText(getActivity(), "Enter a title", Toast.LENGTH_SHORT).show();
-
                 }
                 break;
             }

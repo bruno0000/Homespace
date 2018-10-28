@@ -8,4 +8,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="dialog_new_task">New Task Dialog</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="title_finances">Finances</string>
 </resources>
