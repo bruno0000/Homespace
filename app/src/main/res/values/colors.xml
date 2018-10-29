@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorBackground">#ffffe8</color>
     <color name="colorTitle">#ffdd9200</color>
-    <color name="colorButtonPrimary">#dd9200</color>
+    <color name="colorButtonPrimary">#ffdd9200</color>
+    <color name="colorButtonSecondary">#ffd5ac5c</color>
     <color name="colorAddItem">#fff5df88</color>
 </resources>

@@ -9,4 +9,5 @@
     <string name="title_finances">Finances</string>
     <string name="button_date_picker">Pick Date</string>
     <string name="button_time_picker">Pick Time \nof Day</string>
+    <string name="button_dt_finish">Confirm</string>
 </resources>
