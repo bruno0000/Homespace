@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LoginActivityLOGTAG";
     private final String KEY_USERNAME = "username";
     private final String KEY_USER_ID = "userID";
+    private final String KEY_USER_UID = "userUID";
     private final String KEY_HOMESPACE_ID = "homespaceID";
 
     @Override
@@ -160,30 +162,32 @@ public class LoginActivity extends AppCompatActivity {
         String name = mEditTextUsername.getText().toString();
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        /*
         Map<String, Object> user = new HashMap<>();
         user.put(KEY_USERNAME, name);
-        user.put(KEY_USER_ID, userID);
+        user.put(KEY_USER_UID, userID);
         user.put(KEY_HOMESPACE_ID, "");
+        */
 
-        db.collection("users").document().set(user, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(LoginActivity.this, "User Saved", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+        DocumentReference userRef = db.collection("users").document();
+        User user = new User();
 
-                        //TODO: Remove before hand in
-                        Log.d(TAG, e.toString());
-                    }
-                });
+        user.setUserUID(userID);
+        user.setUserID(userRef.getId());
+        user.setUsername(name);
+
+        userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    Toast.makeText(LoginActivity.this, "User Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    // TODO: Verify current user so they skip the creating homespace activity
     private void userLogin(String username, String password) {
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

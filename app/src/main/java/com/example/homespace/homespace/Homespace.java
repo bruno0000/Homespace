@@ -2,12 +2,12 @@ package com.example.homespace.homespace;
 
 public class Homespace {
     private String homespaceID;
-    private String homespaceCreatorID;
+    private String homespaceCreatorUID;
     private String homespaceName;
 
-    public Homespace(String homespaceID, String homespaceCreatorID, String homespaceName) {
+    public Homespace(String homespaceID, String homespaceCreatorUID, String homespaceName) {
         this.homespaceID = homespaceID;
-        this.homespaceCreatorID = homespaceCreatorID;
+        this.homespaceCreatorUID = homespaceCreatorUID;
         this.homespaceName = homespaceName;
     }
 
@@ -17,8 +17,8 @@ public class Homespace {
         this.homespaceID = homespaceID;
     }
 
-    public void setHomespaceCreatorID(String homespaceCreatorID) {
-        this.homespaceCreatorID = homespaceCreatorID;
+    public void setHomespaceCreatorUID(String homespaceCreatorUID) {
+        this.homespaceCreatorUID = homespaceCreatorUID;
     }
 
     public void setHomespaceName(String homespaceName) {
@@ -29,8 +29,8 @@ public class Homespace {
         return homespaceID;
     }
 
-    public String getHomespaceCreatorID() {
-        return homespaceCreatorID;
+    public String getHomespaceCreatorUID() {
+        return homespaceCreatorUID;
     }
 
     public String getHomespaceName() {

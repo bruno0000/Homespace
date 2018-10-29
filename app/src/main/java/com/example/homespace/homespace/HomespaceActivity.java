@@ -12,11 +12,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class HomespaceActivity extends AppCompatActivity {
     private static final String KEY_HOMESPACE_ID = "homespaceID";
@@ -26,8 +24,6 @@ public class HomespaceActivity extends AppCompatActivity {
     private static final String KEY_HOMESPACE_CREATOR = "homespaceCreator";
 
     private EditText mEditTextName;
-
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,28 +37,32 @@ public class HomespaceActivity extends AppCompatActivity {
         String name = mEditTextName.getText().toString();
         String creator = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         DocumentReference homespaceRef = db.collection("homespaces").document();
 
         Homespace homespace = new Homespace();
 
-        homespace.setHomespaceCreatorID(creator);
-        homespace.setHomespaceID(homespaceRef.getId());
+        homespace.setHomespaceCreatorUID(creator);
         homespace.setHomespaceName(name);
+        homespace.setHomespaceID(homespaceRef.getId());
+
+        // TODO: update current user's document to have this homespace's ID for data modeling
 
         db.collection("homespaces").document().set(homespace)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(HomespaceActivity.this, "Homespace Saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomespaceActivity.this,
+                                "Homespace Saved", Toast.LENGTH_SHORT).show();
                         startMainActivity();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(HomespaceActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomespaceActivity.this,
+                                "Error", Toast.LENGTH_SHORT).show();
                         //TODO: Remove before hand in
                         Log.d(LOG, e.toString());
                     }
