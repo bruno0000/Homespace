@@ -1,6 +1,5 @@
 package com.example.homespace.homespace;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,17 +40,21 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.newTaskDialogCreateTextView: {
 
                 // insert new task
-
                 String title = mTitle.getText().toString();
                 String description = mDescription.getText().toString();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 DocumentReference newTaskRef = db.collection("tasks").document();
                 Task task = new Task();
 
-                task.setTitle(title);
+                if (!title.isEmpty()) {
+                    task.setTitle(title);
+                } else {
+                    Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 task.setDescription(description);
                 task.setTaskID(newTaskRef.getId());
-                task.setUserID(FirebaseAuth.getInstance().getUid());
+                task.setUserUID(FirebaseAuth.getInstance().getUid());
 
                 newTaskRef.set(task).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -63,11 +66,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 });
-
-                if (!title.equals("")) {
-                } else {
-                    Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
-                }
+                this.finish();
                 break;
             }
             case R.id.newTaskDialogCancelTextView: {

@@ -14,15 +14,19 @@ public class Task {
     Date timeCreated;
     private Date dueDate;
     private String taskID;
-    private String userID;
+    private String userUID;
+    private int imageResource;
 
-    public Task(String title, String description, Date timeCreated, Date dueDate, String taskID, String userID) {
+
+
+    public Task(String title, String description, Date timeCreated, Date dueDate, String taskID, String userUID, int imageResource) {
         this.title = title;
         this.description = description;
         this.timeCreated = timeCreated;
         this.dueDate = dueDate;
         this.taskID = taskID;
-        this.userID = userID;
+        this.userUID = userUID;
+        this.imageResource = imageResource;
     }
 
     public Task() {
@@ -60,11 +64,27 @@ public class Task {
         this.taskID = taskID;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserUID() {
+        return userUID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserUID(String userUID) {
+        this.userUID = userUID;
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public int getImageResource() {
+        return imageResource;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
     }
 }
