@@ -9,14 +9,21 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-public class HomespaceActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class HomespaceActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String KEY_HOMESPACE_ID = "homespaceID";
     private final String LOG = "HomespaceActivity";
 
@@ -29,11 +36,20 @@ public class HomespaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homespace);
-
         mEditTextName = findViewById(R.id.nameHomespaceEditText);
+        findViewById(R.id.nameHomespaceButton).setOnClickListener(this);
     }
 
-    public void saveHomespace(View view) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.nameHomespaceButton: {
+                saveHomespace();
+            }
+        }
+    }
+
+    private void saveHomespace() {
         String name = mEditTextName.getText().toString();
         String creator = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -49,7 +65,7 @@ public class HomespaceActivity extends AppCompatActivity {
 
         // TODO: update current user's document to have this homespace's ID for data modeling
 
-        db.collection("homespaces").document().set(homespace)
+        homespaceRef.set(homespace)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -75,4 +91,6 @@ public class HomespaceActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+
 }

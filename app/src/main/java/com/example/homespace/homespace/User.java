@@ -1,10 +1,18 @@
 package com.example.homespace.homespace;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
+@IgnoreExtraProperties
 public class User {
     private String username;
     private String userUID;
     private String userID;
     private String homespaceID;
+    private @ServerTimestamp
+    Date dateCreated;
 
     public User(String username, String userUID, String userID, String homespaceID) {
         this.username = username;

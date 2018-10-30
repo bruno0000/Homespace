@@ -19,14 +19,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText mEditTextUsername, mEditTextPassword, mEditTextConfirmPW;
     private ProgressBar mProgressBarLogin;
@@ -35,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private final String FAKE_EMAIL_DOMAIN = "@superfakeemaildomain.netcom";
-    private final String TAG = "LoginActivityLOGTAG";
+    private final String TAG = "LoginActivity";
     private final String KEY_USERNAME = "username";
     private final String KEY_USER_ID = "userID";
     private final String KEY_USER_UID = "userUID";
@@ -57,48 +62,50 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = mEditTextUsername.getText().toString().trim();
-                String password = mEditTextPassword.getText().toString().trim();
-                userLogin(username, password);
-            }
-        });
-
-
-        findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createUser();
-            }
-        });
-
-        mTextViewShowLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoginForm();
-            }
-        });
-
-        mTextViewShowRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRegisterForm();
-            }
-        });
+        findViewById(R.id.loginButton).setOnClickListener(this);
+        findViewById(R.id.registerButton).setOnClickListener(this);
+        mTextViewShowLogin.setOnClickListener(this);
+        mTextViewShowRegister.setOnClickListener(this);
 
         // check if user is currently logged in
         checkUserState();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.loginButton: {
+                String username = mEditTextUsername.getText().toString().trim();
+                String password = mEditTextPassword.getText().toString().trim();
+                userLogin(username, password);
+                break;
+            }
+            case R.id.registerButton: {
+                createUser();
+                break;
+            }
+            case R.id.returningUserTextView:{
+                showLoginForm();
+                break;
+            }
+            case R.id.signUpTextView:{
+                showRegisterForm();
+                break;
+            }
+        }
+
     }
 
     private void checkUserState(){
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // User is signed in
+            /*
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
+            */
+            hasHomespace();
         } else {
             // User is signed out
             Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -162,13 +169,6 @@ public class LoginActivity extends AppCompatActivity {
         String name = mEditTextUsername.getText().toString();
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        /*
-        Map<String, Object> user = new HashMap<>();
-        user.put(KEY_USERNAME, name);
-        user.put(KEY_USER_UID, userID);
-        user.put(KEY_HOMESPACE_ID, "");
-        */
-
         DocumentReference userRef = db.collection("users").document();
         User user = new User();
 
@@ -202,6 +202,32 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void hasHomespace(){
+        CollectionReference reference = FirebaseFirestore.getInstance().collection("homespaces");
+        Query query = reference
+                .whereEqualTo("homespaceCreatorUID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final ArrayList<Homespace> homespacesList = new ArrayList<>();
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Homespace homespace = document.toObject(Homespace.class);
+                        homespacesList.add(homespace);
+                    }
+                    if (!homespacesList.isEmpty()) {
+                        startMainActivity();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "no homespace", Toast.LENGTH_SHORT).show();
+                        startHomespaceActivity();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Create your homespace", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     // Sends user to activity for creating or joining a homespace
@@ -238,4 +264,5 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.loginButton).setVisibility(View.INVISIBLE);
         mTextViewShowRegister.setVisibility(View.INVISIBLE);
     }
+
 }

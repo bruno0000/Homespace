@@ -73,10 +73,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 this.finish();
                 break;
             }
-            case R.id.buttonnewtaskcanceltest: {
-                finish();
-                break;
-            }
         }
     }
 
