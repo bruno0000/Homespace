@@ -16,13 +16,13 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
     public static class TaskItemViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mTextViewTitle;
-        public TextView mTextViewDesctiption;
+        public TextView mTextViewDescription;
 
         public TaskItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageViewTaskItemImage);
             mTextViewTitle = itemView.findViewById(R.id.textViewTaskItemTitle);
-            mTextViewDesctiption = itemView.findViewById(R.id.textViewTaskItemDescription);
+            mTextViewDescription = itemView.findViewById(R.id.textViewTaskItemDescription);
         }
     }
 
@@ -44,7 +44,7 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
 
         taskItemViewHolder.mImageView.setImageResource(currentTask.getImageResource());
         taskItemViewHolder.mTextViewTitle.setText(currentTask.getTitle());
-        taskItemViewHolder.mTextViewDesctiption.setText(currentTask.getDescription());
+        taskItemViewHolder.mTextViewDescription.setText(currentTask.getDescription());
 
     }
 
