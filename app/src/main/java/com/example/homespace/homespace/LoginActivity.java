@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,6 +37,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText mEditTextUsername, mEditTextPassword, mEditTextConfirmPW;
     private ProgressBar mProgressBarLogin;
     private TextView mTextViewShowLogin, mTextViewShowRegister;
+    private CheckBox mStaySignedInCheckBox;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -58,6 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEditTextConfirmPW = findViewById(R.id.confirmPasswordEditText);
         mTextViewShowLogin = findViewById(R.id.returningUserTextView);
         mTextViewShowRegister = findViewById(R.id.signUpTextView);
+        mStaySignedInCheckBox = findViewById(R.id.staySignedInCheckBox);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -73,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.loginButton: {
                 String username = mEditTextUsername.getText().toString().trim();
                 String password = mEditTextPassword.getText().toString().trim();
@@ -84,11 +88,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 createUser();
                 break;
             }
-            case R.id.returningUserTextView:{
+            case R.id.returningUserTextView: {
                 showLoginForm();
                 break;
             }
-            case R.id.signUpTextView:{
+            case R.id.signUpTextView: {
                 showRegisterForm();
                 break;
             }
@@ -96,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void checkUserState(){
+    private void checkUserState() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // User is signed in
@@ -179,7 +183,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Toast.makeText(LoginActivity.this, "User Saved", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -189,12 +193,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void userLogin(String username, String password) {
+        if (username.isEmpty()) {
+            mEditTextUsername.setError("Username Required");
+            mEditTextUsername.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            mEditTextPassword.setError("Password Required");
+            mEditTextPassword.requestFocus();
+            return;
+        }
+        mProgressBarLogin.setVisibility(View.VISIBLE);
+
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startHomespaceActivity();
+                            hasHomespace();
                         } else {
                             mProgressBarLogin.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this,
@@ -204,10 +221,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    private void hasHomespace(){
+    private void hasHomespace() {
         CollectionReference reference = FirebaseFirestore.getInstance().collection("homespaces");
         Query query = reference
-                .whereEqualTo("homespaceCreatorUID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .whereEqualTo("homespaceCreatorUID", FirebaseAuth.getInstance().getUid());
         final ArrayList<Homespace> homespacesList = new ArrayList<>();
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -216,15 +233,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Homespace homespace = document.toObject(Homespace.class);
                         homespacesList.add(homespace);
+                        if (homespace.getHomespaceCreatorUID().equals(FirebaseAuth.getInstance().getUid())) {
+                            startMainActivity();
+                        }
                     }
+                    /*
                     if (!homespacesList.isEmpty()) {
                         startMainActivity();
                     } else {
                         Toast.makeText(LoginActivity.this, "no homespace", Toast.LENGTH_SHORT).show();
-                        startHomespaceActivity();
                     }
+                    */
                 } else {
                     Toast.makeText(LoginActivity.this, "Create your homespace", Toast.LENGTH_SHORT).show();
+                    startHomespaceActivity();
                 }
             }
         });
@@ -253,6 +275,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.registerButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.loginButton).setVisibility(View.VISIBLE);
         mTextViewShowRegister.setVisibility(View.VISIBLE);
+        //mStaySignedInCheckBox.setVisibility(View.VISIBLE);
 
     }
 
@@ -263,6 +286,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.registerButton).setVisibility(View.VISIBLE);
         findViewById(R.id.loginButton).setVisibility(View.INVISIBLE);
         mTextViewShowRegister.setVisibility(View.INVISIBLE);
+        //mStaySignedInCheckBox.setVisibility(View.INVISIBLE);
     }
 
 }
