@@ -97,22 +97,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void checkUserState() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            /*
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-            */
-            hasHomespace();
-        } else {
-            // User is signed out
-            Log.d(TAG, "onAuthStateChanged:signed_out");
-        }
-    }
-
     private void createUser() {
         // Note fake domain concatenation
         final String username = mEditTextUsername.getText().toString().trim();// + FAKE_EMAIL_DOMAIN;
@@ -219,6 +203,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    private void checkUserState() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            /*
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            */
+            hasHomespace();
+        } else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
+    }
+
+    // checks the db collection to see if the currently logged in user has a homespace with their UID
     private void hasHomespace() {
         CollectionReference reference = FirebaseFirestore.getInstance().collection("homespaces");
         Query query = reference
