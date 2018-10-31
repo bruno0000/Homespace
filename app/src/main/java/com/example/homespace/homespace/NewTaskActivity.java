@@ -24,10 +24,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task);
 
-        mTitle = findViewById(R.id.newTaskDialogTitleEditText);
-        mDescription = findViewById(R.id.newTaskDialogDescriptionEditText);
-        mCancel = findViewById(R.id.newTaskDialogCancelTextView);
-        mCreate = findViewById(R.id.newTaskDialogCreateTextView);
+        mTitle = findViewById(R.id.newTaskTitleEditText);
+        mDescription = findViewById(R.id.newTaskDescriptionEditText);
+        mCancel = findViewById(R.id.newTaskCancelTextView);
+        mCreate = findViewById(R.id.newTaskCreateTextView);
         mCancel.setOnClickListener(this);
         mCreate.setOnClickListener(this);
 
@@ -37,8 +37,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.newTaskDialogCreateTextView: {
-
+            case R.id.newTaskCreateTextView: {
                 // insert new task
                 String title = mTitle.getText().toString();
                 String description = mDescription.getText().toString();
@@ -49,6 +48,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 if (!title.isEmpty()) {
                     task.setTitle(title);
                 } else {
+                    mTitle.setError("Enter a title");
+                    mTitle.requestFocus();
                     Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -69,7 +70,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 this.finish();
                 break;
             }
-            case R.id.newTaskDialogCancelTextView: {
+            case R.id.newTaskCancelTextView: {
                 this.finish();
                 break;
             }

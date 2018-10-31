@@ -40,17 +40,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         v.findViewById(R.id.newTaskFloatingActionButton).setOnClickListener(this);
 
         mTaskList = new ArrayList<>();
-/*
-        for (int i = 0; i < 10; i++){
-            Task task = new Task();
-            task.setTitle("Title" + i);
-            task.setDescription("Description" + i);
-            task.setImageResource(R.drawable.ic_notifications_black_24dp);
 
-            mTaskList.add(task);
-
-        }
-*/
         mRecyclerView = v.findViewById(R.id.taskFragmentRecyclerView);
         mRecyclerView.setHasFixedSize(true);
 
@@ -70,10 +60,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.newTaskFloatingActionButton: {
-                /*
-                NewTaskDialog dialog = new NewTaskDialog();
-                dialog.show(getActivity().getSupportFragmentManager(), "newTaskDialog . show");
-*/
                 Intent intent = new Intent(getActivity(), NewTaskActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -89,9 +75,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
 
     private void getTasks(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         CollectionReference tasksCollectionReference = db.collection("tasks");
-
         Query tasksQuery = tasksCollectionReference
                 .whereEqualTo("userUID", FirebaseAuth.getInstance().getUid());
 

@@ -13,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,11 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -72,7 +67,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTextViewShowRegister.setOnClickListener(this);
 
         // check if user is currently logged in
-        checkUserState();
+        if (mStaySignedInCheckBox.isChecked()) {
+            checkUserState();
+        }
     }
 
     @Override
@@ -204,6 +201,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mEditTextPassword.requestFocus();
             return;
         }
+
         mProgressBarLogin.setVisibility(View.VISIBLE);
 
         mAuth.signInWithEmailAndPassword(username, password)
@@ -237,13 +235,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startMainActivity();
                         }
                     }
-                    /*
-                    if (!homespacesList.isEmpty()) {
-                        startMainActivity();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "no homespace", Toast.LENGTH_SHORT).show();
-                    }
-                    */
                 } else {
                     Toast.makeText(LoginActivity.this, "Create your homespace", Toast.LENGTH_SHORT).show();
                     startHomespaceActivity();
