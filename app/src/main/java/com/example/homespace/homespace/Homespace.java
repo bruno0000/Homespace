@@ -11,6 +11,7 @@ public class Homespace {
         this.homespaceName = homespaceName;
     }
 
+
     public Homespace(){}
 
     public void setHomespaceID(String homespaceID) {
