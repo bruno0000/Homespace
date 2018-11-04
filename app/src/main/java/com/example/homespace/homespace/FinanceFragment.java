@@ -24,7 +24,9 @@ import java.util.ArrayList;
 public class FinanceFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "FinanceFragment";
 
+    private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private ArrayList<Finance> mFinanceList;
     @Nullable
@@ -35,14 +37,14 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
 
         mFinanceList = new ArrayList<>();
 
-        RecyclerView recyclerView = v.findViewById(R.id.financeFragmentRecyclerView);
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView = v.findViewById(R.id.financeFragmentRecyclerView);
+        mRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         mAdapter = new FinanceItemRecyclerViewAdapter(mFinanceList);
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
 
         getFinances();
 
