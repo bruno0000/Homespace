@@ -4,6 +4,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @IgnoreExtraProperties
 public class Task {
@@ -12,14 +13,14 @@ public class Task {
     private String description;
     private @ServerTimestamp
     Date timeCreated;
-    private Date dueDate;
+    private List<Integer> dueDate;
     private String taskID;
     private String userUID;
     private int imageResource;
 
 
 
-    public Task(String title, String description, Date timeCreated, Date dueDate, String taskID, String userUID, int imageResource) {
+    public Task(String title, String description, Date timeCreated, List<Integer >dueDate, String taskID, String userUID, int imageResource) {
         this.title = title;
         this.description = description;
         this.timeCreated = timeCreated;
@@ -48,11 +49,11 @@ public class Task {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public List<Integer> getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(List<Integer> dueDate) {
         this.dueDate = dueDate;
     }
 

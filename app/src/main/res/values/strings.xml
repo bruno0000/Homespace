@@ -10,4 +10,6 @@
     <string name="dialog_new_task">New Task Dialog</string>
     <string name="title_tasks">Tasks</string>
     <string name="title_finances">Finances</string>
+    <string name="create_task">Create</string>
+    <string name="cancel_task">Cancel</string>
 </resources>
