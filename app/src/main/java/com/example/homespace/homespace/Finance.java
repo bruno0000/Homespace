@@ -9,6 +9,7 @@ import java.util.Date;
 public class Finance {
     private String title;
     private String description;
+    private double amount;
     private @ServerTimestamp
     Date timeCreated;
     private Date dueDate;
@@ -16,14 +17,25 @@ public class Finance {
     private String userUID;
     private int imageResource;
 
-    public Finance(String title, String description, Date timeCreated, Date dueDate, String financeID, String userUID, int imageResource) {
+    public Finance(String title, String description, double amount, Date timeCreated, Date dueDate, String financeID, String userUID, int imageResource) {
         this.title = title;
         this.description = description;
+        this.amount = amount;
         this.timeCreated = timeCreated;
         this.dueDate = dueDate;
         this.financeID = financeID;
         this.userUID = userUID;
         this.imageResource = imageResource;
+    }
+
+    public Finance(){}
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public String getTitle() {

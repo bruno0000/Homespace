@@ -1,5 +1,6 @@
 package com.example.homespace.homespace;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +31,7 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private ArrayList<Finance> mFinanceList;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,10 +43,10 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
         mRecyclerView = v.findViewById(R.id.financeFragmentRecyclerView);
         mRecyclerView.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+        mLayoutManager = new LinearLayoutManager(this.getActivity());
         mAdapter = new FinanceItemRecyclerViewAdapter(mFinanceList);
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
         getFinances();
@@ -53,14 +56,17 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.newFinanceFloatingActionButton: {
                 // start new finance activity
+                Intent intent = new Intent(getActivity(), NewFinanceActivity.class);
+                startActivity(intent);
+                break;
             }
         }
     }
 
-    private void getFinances(){
+    private void getFinances() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference financesReference = db.collection("finances");
         Query financeQuery = financesReference
@@ -69,11 +75,14 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
         financeQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    for (QueryDocumentSnapshot document: task.getResult()){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         Finance finance = document.toObject(Finance.class);
-
+                        mFinanceList.add(finance);
+                        mAdapter.notifyDataSetChanged();
                     }
+                } else {
+                    Toast.makeText(getActivity(), "Query Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

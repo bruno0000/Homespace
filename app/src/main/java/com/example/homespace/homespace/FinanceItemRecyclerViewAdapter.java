@@ -10,17 +10,22 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class FinanceItemRecyclerViewAdapter extends RecyclerView.Adapter {
+public class FinanceItemRecyclerViewAdapter extends RecyclerView.Adapter<FinanceItemRecyclerViewAdapter.FinanceItemViewHolder> {
     private ArrayList<Finance> mFinanceList;
 
     public static class FinanceItemViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mTextViewTitle;
         public TextView mTextViewDescription;
+        public TextView mAmountTextView;
 
         public FinanceItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            // mImageView = itemView.findViewByID();
+            mImageView = itemView.findViewById(R.id.imageViewFinanceItemImage);
+            mTextViewTitle = itemView.findViewById(R.id.textViewFinanceItemTitle);
+            mTextViewDescription = itemView.findViewById(R.id.textViewFinanceItemDescription);
+            mAmountTextView = itemView.findViewById(R.id.textViewFinanceItemAmount);
+
         }
     }
 
@@ -30,17 +35,21 @@ public class FinanceItemRecyclerViewAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-    //    View v = LayoutInflater.from(viewGroup.getContext())
-    //            .inflate(R.layout., viewGroup, false);
-
-    //    return new FinanceItemViewHolder(v);
-        return null;
+    public FinanceItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.layout_finance_item, viewGroup, false);
+        return new FinanceItemViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull FinanceItemViewHolder viewHolder, int i) {
         Finance currentFinance = mFinanceList.get(i);
+
+        viewHolder.mImageView.setImageResource(currentFinance.getImageResource());
+        viewHolder.mTextViewTitle.setText(currentFinance.getTitle());
+        viewHolder.mTextViewDescription.setText(currentFinance.getDescription());
+        String amount = currentFinance.getAmount() + "";
+        viewHolder.mAmountTextView.setText(amount);
 
     }
 
