@@ -26,8 +26,8 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
             mImageView = itemView.findViewById(R.id.imageViewTaskItemImage);
             mTextViewTitle = itemView.findViewById(R.id.textViewTaskItemTitle);
             mTextViewDescription = itemView.findViewById(R.id.textViewTaskItemDescription);
-            mTextViewTitle = itemView.findViewById(R.id.textViewDueDateTime);
-            mTextViewDescription = itemView.findViewById(R.id.textViewDueDateTimeLabel);
+            mTextViewDueDateTime = itemView.findViewById(R.id.textViewDueDateTime);
+            mTextViewDueDateTimeLabel = itemView.findViewById(R.id.textViewDueDateTimeLabel);
         }
     }
 
@@ -46,16 +46,39 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
     @Override
     public void onBindViewHolder(@NonNull TaskItemViewHolder taskItemViewHolder, int i) {
         Task currentTask = mTaskList.get(i);
-        List<Integer> dueDateList = new ArrayList<Integer>();
+        List<Integer> dueDateList = currentTask.getDueDate();
         String dueDateDisplay = "";
-        for(Integer item : dueDateList ) {
-            dueDateDisplay += dueDateList;
+        int dateTimeIndex = 0;
+        for(Integer item : dueDateList) {
+            switch(dateTimeIndex) {
+                case(0) : {
+                    dueDateDisplay += item + "/";
+                    break;
+                }
+                case(1) : {
+                    dueDateDisplay += item + "/";
+                    break;
+                }
+                case(2) : {
+                    dueDateDisplay += item + " at: ";
+                    break;
+                }
+                case(3) : {
+                    dueDateDisplay += item + ":";
+                    break;
+                }
+                case(4) : {
+                    dueDateDisplay += item;
+                    break;
+                }
+            }
+            dateTimeIndex++;
         }
 
         taskItemViewHolder.mImageView.setImageResource(currentTask.getImageResource());
         taskItemViewHolder.mTextViewTitle.setText(currentTask.getTitle());
         taskItemViewHolder.mTextViewDescription.setText(currentTask.getDescription());
-        taskItemViewHolder.mTextViewDescription.setText("" + currentTask.getDueDate());
+        taskItemViewHolder.mTextViewDueDateTime.setText(dueDateDisplay);
 
     }
 
