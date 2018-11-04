@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRecyclerViewAdapter.TaskItemViewHolder> {
     private ArrayList<Task> mTaskList;
@@ -17,12 +18,16 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
         public ImageView mImageView;
         public TextView mTextViewTitle;
         public TextView mTextViewDescription;
+        public TextView mTextViewDueDateTimeLabel;
+        public TextView mTextViewDueDateTime;
 
         public TaskItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageViewTaskItemImage);
             mTextViewTitle = itemView.findViewById(R.id.textViewTaskItemTitle);
             mTextViewDescription = itemView.findViewById(R.id.textViewTaskItemDescription);
+            mTextViewTitle = itemView.findViewById(R.id.textViewDueDateTime);
+            mTextViewDescription = itemView.findViewById(R.id.textViewDueDateTimeLabel);
         }
     }
 
@@ -41,10 +46,16 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
     @Override
     public void onBindViewHolder(@NonNull TaskItemViewHolder taskItemViewHolder, int i) {
         Task currentTask = mTaskList.get(i);
+        List<Integer> dueDateList = new ArrayList<Integer>();
+        String dueDateDisplay = "";
+        for(Integer item : dueDateList ) {
+            dueDateDisplay += dueDateList;
+        }
 
         taskItemViewHolder.mImageView.setImageResource(currentTask.getImageResource());
         taskItemViewHolder.mTextViewTitle.setText(currentTask.getTitle());
         taskItemViewHolder.mTextViewDescription.setText(currentTask.getDescription());
+        taskItemViewHolder.mTextViewDescription.setText("" + currentTask.getDueDate());
 
     }
 
