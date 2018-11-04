@@ -56,7 +56,7 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
                     break;
                 }
                 case(1) : {
-                    dueDateDisplay += item + "/";
+                    dueDateDisplay += (item+1) + "/";
                     break;
                 }
                 case(2) : {
