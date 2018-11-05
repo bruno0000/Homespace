@@ -49,11 +49,10 @@
             android:id="@+id/textViewDueDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
             android:text="due date/time"
-            app:layout_constraintStart_toStartOf="@+id/textViewTaskItemDescription"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTaskItemDescription" />
+            app:layout_constraintStart_toEndOf="@+id/textViewDueDateTimeLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewDueDateTimeLabel" />
 
         <TextView
             android:id="@+id/textViewDueDateTimeLabel"
