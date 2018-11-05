@@ -9,11 +9,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomespaceActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String KEY_HOMESPACE_ID = "homespaceID";
@@ -37,42 +42,54 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.nameHomespaceButton: {
                 saveHomespace();
+                break;
             }
         }
     }
 
     private void saveHomespace() {
         String name = mEditTextName.getText().toString();
-        String creator = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String creatorUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         DocumentReference homespaceRef = db.collection("homespaces").document();
 
+        String homespaceID = homespaceRef.getId();
+
         Homespace homespace = new Homespace();
 
-        homespace.setHomespaceCreatorUID(creator);
+        homespace.setHomespaceCreatorUID(creatorUID);
         homespace.setHomespaceName(name);
-        homespace.setHomespaceID(homespaceRef.getId());
+        homespace.setHomespaceID(homespaceID);
+        List<String> userList = new ArrayList<>();
+        userList.add(creatorUID);
+        homespace.setUserList(userList);
 
-        // TODO: update current user's document to have this homespace's ID for data modeling
-
-        homespaceRef.set(homespace)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        // update current user's document to have this homespace's ID for data modeling
+        db.collection("users").document(creatorUID)
+                .update("homespaceID", homespaceID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(HomespaceActivity.this,
-                                "Homespace Saved", Toast.LENGTH_SHORT).show();
-                        startMainActivity();
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(HomespaceActivity.this, "user homespaceID updated", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                        }
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                });
+
+        // add new homespace to DB
+        homespaceRef.set(homespace)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(HomespaceActivity.this,
-                                "Error", Toast.LENGTH_SHORT).show();
-                        //TODO: Remove before hand in
-                        Log.d(LOG, e.toString());
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(HomespaceActivity.this, "Homespace Saved", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                        }
                     }
                 });
     }

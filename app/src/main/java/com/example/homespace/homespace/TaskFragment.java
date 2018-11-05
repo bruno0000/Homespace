@@ -36,7 +36,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_tasks, container, false);
-        v.findViewById(R.id.buttonTestCalendar).setOnClickListener(this);
         v.findViewById(R.id.newTaskFloatingActionButton).setOnClickListener(this);
 
         mTaskList = new ArrayList<>();
@@ -62,11 +61,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             case R.id.newTaskFloatingActionButton: {
                 Intent intent = new Intent(getActivity(), NewTaskActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                break;
-            }
-            case R.id.buttonTestCalendar: {
-                Intent intent = new Intent(getActivity(), CalendarActivity.class);
                 startActivity(intent);
                 break;
             }

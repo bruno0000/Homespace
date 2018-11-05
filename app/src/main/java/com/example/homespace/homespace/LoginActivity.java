@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private final String FAKE_EMAIL_DOMAIN = "@superfakeemaildomain.netcom";
+    private final String FAKE_EMAIL_DOMAIN = "@homespace.users";
     private final String TAG = "LoginActivity";
     private final String KEY_USERNAME = "username";
     private final String KEY_USER_ID = "userID";
@@ -154,11 +154,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String name = mEditTextUsername.getText().toString();
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DocumentReference userRef = db.collection("users").document();
+        DocumentReference userRef = db.collection("users").document(userID);
         User user = new User();
 
         user.setUserUID(userID);
-        user.setUserID(userRef.getId());
+        //user.setUserID(userRef.getId());
         user.setUsername(name);
 
         userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -207,11 +207,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // User is signed in
-            /*
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-            */
             hasHomespace();
         } else {
             // User is signed out
@@ -222,8 +217,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // checks the db collection to see if the currently logged in user has a homespace with their UID
     private void hasHomespace() {
         CollectionReference reference = FirebaseFirestore.getInstance().collection("homespaces");
-        Query query = reference
-                .whereEqualTo("homespaceCreatorUID", FirebaseAuth.getInstance().getUid());
+        Query query = reference.whereArrayContains("userList", mAuth.getUid());
+
         final ArrayList<Homespace> homespacesList = new ArrayList<>();
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
