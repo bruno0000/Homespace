@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
         android:layout_marginTop="120dp"
+        android:contentDescription="@string/logo__icon_placeholder_description"
         android:src="@drawable/ic_home_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,12 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
+        android:autofillHints=""
         android:ems="10"
-        android:hint="name your homespace..."
+        android:hint="@string/name_your_homespace_hint"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newHomespaceImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/newHomespaceImageView" tools:targetApi="o"/>
 
     <Button
         android:id="@+id/nameHomespaceButton"
@@ -35,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginTop="16dp"
-        android:text="continue"
+        android:text="@string/continue_btn_name_homespace"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameHomespaceEditText"/>
 
@@ -56,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="112dp"
-        android:text="Joining an existing Homespace? Tap here!"
+        android:text="@string/join_existing_space_option"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameHomespaceButton" />
 
@@ -66,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="112dp"
-        android:text="Want to create a new Homespace? Tap here!"
+        android:text="@string/create_new_homespace_option"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameHomespaceButton" />
@@ -75,9 +77,9 @@
         android:id="@+id/joinHomespaceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
+        android:layout_marginStart="153dp"
         android:layout_marginTop="16dp"
-        android:text="Join"
+        android:text="@string/join_existing_button"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameHomespaceEditText" />
