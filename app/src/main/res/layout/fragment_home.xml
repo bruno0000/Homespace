@@ -6,40 +6,21 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <TextView
-        android:id="@+id/homeFragmentHomeNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/home_title"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toTopOf="@+id/homespaceMemberListRecyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/signOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/sign_out_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/addMemberCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -61,7 +42,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Add Member"
+                android:text="@string/add_member"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -69,7 +50,7 @@
             <EditText
                 android:id="@+id/addMemberEditText"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="49dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -88,17 +69,37 @@
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/homespaceMemberListRecyclerView"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/addMemberCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeFragmentHomeNameTextView" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/homeFragmentUserListSwipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/homespaceMemberListRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </android.support.constraint.ConstraintLayout>

@@ -12,16 +12,22 @@ public class User {
     private String userID;
     private String homespaceID;
     private @ServerTimestamp
-    Date dateCreated;
+    Date timeCreated;
 
-    public User(String username, String userUID, String userID, String homespaceID) {
+    public User(String username, String userUID, String userID, String homespaceID, Date timeCreated) {
         this.username = username;
         this.userUID = userUID;
         this.userID = userID;
         this.homespaceID = homespaceID;
+        this.timeCreated = timeCreated;
     }
 
-    public User(){}
+    public User() {
+    }
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -55,4 +61,7 @@ public class User {
         return homespaceID;
     }
 
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
 }

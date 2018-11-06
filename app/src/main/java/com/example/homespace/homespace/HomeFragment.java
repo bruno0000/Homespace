@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -41,6 +42,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private DocumentSnapshot mLastQueriedDocument;
 
     private ArrayList<User> mUserList;
 
@@ -68,26 +72,32 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        //getUsers();
+        mSwipeRefreshLayout = v.findViewById(R.id.homeFragmentUserListSwipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        getHomespaceID();
+        getUsers();
 
         return v;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRefresh() {
         getUsers();
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
-    // incomplete
-    private void getUsers() {
+    private void getHomespaceID(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userUID = FirebaseAuth.getInstance().getUid();
 
-        // get homespaceID from current user
+        // first get homespaceID from current user
         CollectionReference usersRef = db.collection("users");
-        Query usersQuery = usersRef.whereEqualTo("userUID", userUID);
-        usersQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        Query currentUserQuery = usersRef.whereEqualTo("userUID", userUID);
+        currentUserQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -101,29 +111,44 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        homespaceID = "";
+        //homespaceID = "";
         if (!mUserList.isEmpty())
             homespaceID = mUserList.get(0).getHomespaceID();
         mUserList.clear();
+    }
 
-        // get the users with the same homespaceID
-        Query query = usersRef.whereEqualTo("homespaceID", homespaceID);
+    private void getUsers() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        // second get the users with the same homespaceID
+        CollectionReference usersRef = db.collection("users");
+
+        Query usersQuery = null;
+        if (mLastQueriedDocument != null) {
+            usersQuery = usersRef.whereEqualTo("homespaceID", homespaceID)
+                    .startAfter(mLastQueriedDocument); // for no duplicates on refresh
+        } else {
+            usersQuery = usersRef.whereEqualTo("homespaceID", homespaceID);
+        }
+
+        usersQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         User userDoc = document.toObject(User.class);
                         mUserList.add(userDoc);
-                        mAdapter.notifyDataSetChanged();
                     }
+                    if (task.getResult().size() != 0) {
+                        mLastQueriedDocument = task.getResult().getDocuments()
+                                .get(task.getResult().size() - 1);
+                    }
+                    mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(), "Query Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     private void setupFirebaseListener() {
