@@ -204,6 +204,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void checkUserState() {
+        mProgressBarLogin.setVisibility(View.VISIBLE);
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // User is signed in

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,12 +25,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class FinanceFragment extends Fragment implements View.OnClickListener {
+public class FinanceFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "FinanceFragment";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private DocumentSnapshot mLastQueriedDocument;
 
     private ArrayList<Finance> mFinanceList;
 
@@ -49,9 +54,20 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+        mSwipeRefreshLayout = v.findViewById(R.id.financeFragmentSwipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         getFinances();
 
         return v;
+    }
+
+    @Override
+    public void onRefresh() {
+        getFinances();
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
@@ -69,9 +85,17 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
     private void getFinances() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference financesReference = db.collection("finances");
-        Query financeQuery = financesReference
-                .whereEqualTo("userUID", FirebaseAuth.getInstance().getUid());
-
+        Query financeQuery = null;
+        if (mLastQueriedDocument != null) {
+            financeQuery = financesReference
+                    .whereEqualTo("userUID", FirebaseAuth.getInstance().getUid())
+                    .orderBy("timeCreated", Query.Direction.ASCENDING)
+                    .startAfter(mLastQueriedDocument); // for no duplicated on refresh
+        } else {
+            financeQuery = financesReference
+                    .whereEqualTo("userUID", FirebaseAuth.getInstance().getUid())
+                    .orderBy("timeCreated", Query.Direction.ASCENDING);
+        }
         financeQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -79,12 +103,17 @@ public class FinanceFragment extends Fragment implements View.OnClickListener {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Finance finance = document.toObject(Finance.class);
                         mFinanceList.add(finance);
-                        mAdapter.notifyDataSetChanged();
                     }
+                    if (task.getResult().size() != 0) {
+                        mLastQueriedDocument = task.getResult().getDocuments()
+                                .get(task.getResult().size() - 1);
+                    }
+                    mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(), "Query Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
 }
