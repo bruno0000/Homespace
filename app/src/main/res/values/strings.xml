@@ -12,4 +12,15 @@
     <string name="title_finances">Finances</string>
     <string name="create_task">Create</string>
     <string name="cancel_task">Cancel</string>
+    <string name="name_your_homespace_hint">name your homespace&#8230;</string>
+    <string name="continue_btn_name_homespace">continue</string>
+    <string name="join_existing_space_option">Joining an existing Homespace? Tap here!</string>
+    <string name="create_new_homespace_option">Want to create a new Homespace? Tap here!</string>
+    <string name="join_existing_button">Join</string>
+    <string name="logo__icon_placeholder_description">logo placeholder</string>
+    <string name="finances_title">Finances</string>
+    <string name="tasks_title">Tasks</string>
+    <string name="button_test_Calendar">Button</string>
+    <string name="home_title">Home</string>
+    <string name="sign_out_button_text">Sign Out</string>
 </resources>
