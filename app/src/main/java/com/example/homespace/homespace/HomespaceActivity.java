@@ -87,6 +87,7 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(HomespaceActivity.this, "Homespace Saved", Toast.LENGTH_SHORT).show();
+                            startMainActivity();
                         } else {
 
                         }

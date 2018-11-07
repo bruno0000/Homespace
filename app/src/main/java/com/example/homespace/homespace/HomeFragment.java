@@ -23,12 +23,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
@@ -37,7 +39,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     private Button mSignOut;
     private EditText mAddMemberEditText;
-    private String homespaceID;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -48,6 +49,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     private ArrayList<User> mUserList;
 
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
+    // list will load users with null homespaceID on start, getHomespaceID() not working unless
+    // user uses pull-down refresh then it loads correctly
+    private String mHomespaceID = "x";
 
     @Nullable
     @Override
@@ -59,7 +66,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         v.findViewById(R.id.addMemberButton).setOnClickListener(this);
         mAddMemberEditText = v.findViewById(R.id.addMemberEditText);
 
+        db = FirebaseFirestore.getInstance();
         setupFirebaseListener();
+        mAuth = FirebaseAuth.getInstance();
 
         mUserList = new ArrayList<>();
 
@@ -75,7 +84,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         mSwipeRefreshLayout = v.findViewById(R.id.homeFragmentUserListSwipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        getHomespaceID();
         getUsers();
 
         return v;
@@ -89,46 +97,45 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         }
     }
 
-    private void getHomespaceID(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String userUID = FirebaseAuth.getInstance().getUid();
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
 
-        // first get homespaceID from current user
-        CollectionReference usersRef = db.collection("users");
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
 
-        Query currentUserQuery = usersRef.whereEqualTo("userUID", userUID);
-        currentUserQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        User user = document.toObject(User.class);
-                        mUserList.add(user);
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "Error getting homespaceID", Toast.LENGTH_SHORT).show();
-                }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.signOutButton: {
+                FirebaseAuth.getInstance().signOut();
+                break;
             }
-        });
-
-        //homespaceID = "";
-        if (!mUserList.isEmpty())
-            homespaceID = mUserList.get(0).getHomespaceID();
-        mUserList.clear();
+            case R.id.addMemberButton: {
+                // TODO: Add members
+                addMember();
+                break;
+            }
+        }
     }
 
     private void getUsers() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        getHomespaceID();
 
-        // second get the users with the same homespaceID
         CollectionReference usersRef = db.collection("users");
-
         Query usersQuery = null;
         if (mLastQueriedDocument != null) {
-            usersQuery = usersRef.whereEqualTo("homespaceID", homespaceID)
+            usersQuery = usersRef.whereEqualTo("homespaceID", mHomespaceID)
                     .startAfter(mLastQueriedDocument); // for no duplicates on refresh
         } else {
-            usersQuery = usersRef.whereEqualTo("homespaceID", homespaceID);
+            usersQuery = usersRef.whereEqualTo("homespaceID", mHomespaceID);
         }
 
         usersQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -151,6 +158,73 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         });
     }
 
+    private void getHomespaceID() {
+        String userUID = mAuth.getUid();
+
+        DocumentReference docRef = db.collection("users").document(userUID);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User user = task.getResult().toObject(User.class);
+                    mHomespaceID = user.getHomespaceID();
+                }
+            }
+        });
+    }
+
+    private void addMember() {
+        final String username = mAddMemberEditText.getText().toString().trim();
+        CollectionReference usersRef = db.collection("users");
+        Query userQuery = usersRef.whereEqualTo("username", username);
+        userQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        User user = document.toObject(User.class);
+                        updateUserHomespaceID(user, mHomespaceID);
+                        updateHomespaceUserList(user, mHomespaceID);
+                    }
+                }
+            }
+        });
+    }
+
+    private void updateUserHomespaceID(final User user, String homespaceID) {
+        // update current user's document to have this homespace's ID for data modeling
+        db.collection("users").document(user.getUserUID())
+                .update("homespaceID", homespaceID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Added " + user.getUsername(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Could not find user", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    // updates the array of userID strings within the homespace document
+    private void updateHomespaceUserList(final User user, String homespaceID) {
+        DocumentReference homespaceRef = db.collection("homespaces").document(homespaceID);
+
+        homespaceRef.update("userList", FieldValue.arrayUnion(user.getUserUID()))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "homespace userList update successful", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "homespace userList update unsuccessful", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     private void setupFirebaseListener() {
         Log.d(TAG, "setupFirebaseListener: setting up the auth state listener");
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -168,36 +242,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 }
             }
         };
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthStateListener != null) {
-            FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.signOutButton: {
-                FirebaseAuth.getInstance().signOut();
-                break;
-            }
-            case R.id.addMemberButton: {
-                String username = mAddMemberEditText.getText().toString().trim();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                // TODO: Add members
-
-                break;
-            }
-        }
     }
 }

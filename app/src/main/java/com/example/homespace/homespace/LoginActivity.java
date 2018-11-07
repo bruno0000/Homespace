@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -133,7 +134,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         if (task.isSuccessful()) {
                             saveNewUser();
                             startHomespaceActivity();
@@ -158,7 +158,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         User user = new User();
 
         user.setUserUID(userID);
-        //user.setUserID(userRef.getId());
         user.setUsername(name);
 
         userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -193,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            hasHomespace();
+                            hasHomespace(mAuth.getUid());
                         } else {
                             mProgressBarLogin.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this,
@@ -203,41 +202,56 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    private void checkUserState() {
-        mProgressBarLogin.setVisibility(View.VISIBLE);
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            hasHomespace();
-        } else {
-            // User is signed out
-            Log.d(TAG, "onAuthStateChanged:signed_out");
-        }
-    }
-
     // checks the db collection to see if the currently logged in user has a homespace with their UID
-    private void hasHomespace() {
-        CollectionReference reference = FirebaseFirestore.getInstance().collection("homespaces");
-        Query query = reference.whereArrayContains("userList", mAuth.getUid());
+    private void hasHomespace(String userID) {
+        /*CollectionReference reference = db.collection("homespaces");
+        Query userListQuery = reference.whereArrayContains("userList", userID);
 
-        final ArrayList<Homespace> homespacesList = new ArrayList<>();
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        userListQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Homespace homespace = document.toObject(Homespace.class);
-                        homespacesList.add(homespace);
-                        if (homespace.getHomespaceCreatorUID().equals(FirebaseAuth.getInstance().getUid())) {
+                        if (homespace.getUserList().contains(FirebaseAuth.getInstance().getUid())) {
                             startMainActivity();
+                        } else {
+                            startHomespaceActivity();
                         }
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Create your homespace", Toast.LENGTH_SHORT).show();
-                    startHomespaceActivity();
+                    mProgressBarLogin.setVisibility(View.INVISIBLE);
+                }
+            }
+        });*/
+
+        DocumentReference userRef = db.collection("users").document(userID);
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User user = task.getResult().toObject(User.class);
+                    if (user.getHomespaceID().isEmpty()) {
+                        startHomespaceActivity();
+                    } else {
+                        startMainActivity();
+                    }
                 }
             }
         });
+    }
+
+    private void checkUserState() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            mProgressBarLogin.setVisibility(View.VISIBLE);
+            hasHomespace(user.getUid());
+        } else {
+            // User is signed out
+            mProgressBarLogin.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
     }
 
     // Sends user to activity for creating or joining a homespace
@@ -263,7 +277,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.registerButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.loginButton).setVisibility(View.VISIBLE);
         mTextViewShowRegister.setVisibility(View.VISIBLE);
-        //mStaySignedInCheckBox.setVisibility(View.VISIBLE);
 
     }
 
@@ -274,7 +287,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.registerButton).setVisibility(View.VISIBLE);
         findViewById(R.id.loginButton).setVisibility(View.INVISIBLE);
         mTextViewShowRegister.setVisibility(View.INVISIBLE);
-        //mStaySignedInCheckBox.setVisibility(View.INVISIBLE);
     }
 
 }
