@@ -35,8 +35,6 @@ import java.util.List;
 public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
 
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-
     private Button mSignOut;
     private EditText mAddMemberEditText;
 
@@ -67,7 +65,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         mAddMemberEditText = v.findViewById(R.id.addMemberEditText);
 
         db = FirebaseFirestore.getInstance();
-        setupFirebaseListener();
         mAuth = FirebaseAuth.getInstance();
 
         mUserList = new ArrayList<>();
@@ -94,20 +91,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         getUsers();
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthStateListener != null) {
-            mAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
@@ -222,24 +205,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                         }
                     }
                 });
-    }
-
-    private void setupFirebaseListener() {
-        Log.d(TAG, "setupFirebaseListener: setting up the auth state listener");
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged: signed_in " + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged: signed_out");
-                    Toast.makeText(getActivity(), "Signed Out", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-            }
-        };
     }
 }
