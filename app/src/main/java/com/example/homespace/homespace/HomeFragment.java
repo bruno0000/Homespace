@@ -119,7 +119,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                 break;
             }
             case R.id.addMemberButton: {
-                // TODO: Add members
                 addMember();
                 break;
             }

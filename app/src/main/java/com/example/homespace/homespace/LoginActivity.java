@@ -20,13 +20,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -151,8 +148,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void saveNewUser() {
-        String name = mEditTextUsername.getText().toString();
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String name = mEditTextUsername.getText().toString().trim();
+        String userID = mAuth.getUid();
 
         DocumentReference userRef = db.collection("users").document(userID);
         User user = new User();
@@ -192,7 +189,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            hasHomespace(mAuth.getUid());
+                            verifyHomespace();
                         } else {
                             mProgressBarLogin.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this,
@@ -203,42 +200,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // checks the db collection to see if the currently logged in user has a homespace with their UID
-    private void hasHomespace(String userID) {
-        /*CollectionReference reference = db.collection("homespaces");
-        Query userListQuery = reference.whereArrayContains("userList", userID);
-
-        userListQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Homespace homespace = document.toObject(Homespace.class);
-                        if (homespace.getUserList().contains(FirebaseAuth.getInstance().getUid())) {
-                            startMainActivity();
-                        } else {
-                            startHomespaceActivity();
+    private void verifyHomespace() {
+        final String userID = FirebaseAuth.getInstance().getUid();
+        CollectionReference reference = db.collection("homespaces");
+        Query userListQuery = null;
+        if (userID != null) {
+            userListQuery = reference.whereArrayContains("userList", userID);
+            userListQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Homespace homespace = document.toObject(Homespace.class);
+                            if (homespace.getUserList().contains(userID)){
+                                startMainActivity();
+                                return;
+                            }
                         }
                     }
-                } else {
-                    mProgressBarLogin.setVisibility(View.INVISIBLE);
                 }
-            }
-        });*/
-
-        DocumentReference userRef = db.collection("users").document(userID);
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    User user = task.getResult().toObject(User.class);
-                    if (user.getHomespaceID().isEmpty()) {
-                        startHomespaceActivity();
-                    } else {
-                        startMainActivity();
-                    }
-                }
-            }
-        });
+            });
+        }
+        startHomespaceActivity();
+        mProgressBarLogin.setVisibility(View.INVISIBLE);
     }
 
     private void checkUserState() {
@@ -246,7 +230,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (user != null) {
             // User is signed in
             mProgressBarLogin.setVisibility(View.VISIBLE);
-            hasHomespace(user.getUid());
+            verifyHomespace();
         } else {
             // User is signed out
             mProgressBarLogin.setVisibility(View.INVISIBLE);
