@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -53,6 +54,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mCreate = findViewById(R.id.newTaskCreateTextView);
         mEditDate = findViewById(R.id.newTaskDueDateEditText);
         mEditTime = findViewById(R.id.newTaskDueTimeEditText);
+
+        findViewById(R.id.newTaskMembersButton).setOnClickListener(this);
 
         mCancel.setOnClickListener(this);
         mCreate.setOnClickListener(this);
@@ -164,6 +167,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.newTaskCancelTextView: {
                 Toast.makeText(NewTaskActivity.this, "" + cal.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
                 this.finish();
+                break;
+            }
+            case R.id.newTaskMembersButton: {
+                DialogFragment memberSelectionDialog = new MemberSelectionDialog();
+                memberSelectionDialog.show(getSupportFragmentManager(),"Select Members");
                 break;
             }
         }
