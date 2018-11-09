@@ -12,8 +12,10 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="true"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/common_google_signin_btn_text_dark_focused"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <android.support.v4.widget.SwipeRefreshLayout

@@ -67,25 +67,22 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int yy, int mm, int dd) {
-                final SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/DD", getResources().getConfiguration().locale);
-                String date = yy + "/" + mm + "/" + dd;
-                year = yy;
-                month = mm;
-                day = dd;
-
-                mEditDate.setText(date);
-                Log.d("TaskFragment", "OnDateSet: year/month/day: " + date);
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");
+                cal.set(Calendar.YEAR, yy);
+                cal.set(Calendar.MONTH, mm);
+                cal.set(Calendar.DAY_OF_MONTH, dd);
+                Date date = cal.getTime();
+                mEditDate.setText(dateFormatter.format(date));
             }
         };
         mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hh, int mm) {
-                final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", getResources().getConfiguration().locale);
-                String time = hh + ":" + mm;
-                hour = hh;
-                minute = mm;
-                mEditTime.setText(time);
-                Log.d("TaskFragment", "OnTimeSet: " + time);
+                SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a");
+                cal.set(Calendar.HOUR_OF_DAY, hh);
+                cal.set(Calendar.MINUTE, mm);
+                Date time = cal.getTime();
+                mEditTime.setText(timeFormatter.format(time));
             }
         };
     }
@@ -165,7 +162,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             }
             case R.id.newTaskCancelTextView: {
-                Toast.makeText(NewTaskActivity.this, "" + cal.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
                 this.finish();
                 break;
             }

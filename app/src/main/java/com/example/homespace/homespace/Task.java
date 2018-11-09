@@ -20,7 +20,7 @@ public class Task {
 
 
 
-    public Task(String title, String description, Date timeCreated, List<Integer >dueDate, String taskID, String userUID, int imageResource) {
+    public Task(String title, String description, Date timeCreated, List<Integer>dueDate, String taskID, String userUID, int imageResource) {
         this.title = title;
         this.description = description;
         this.timeCreated = timeCreated;

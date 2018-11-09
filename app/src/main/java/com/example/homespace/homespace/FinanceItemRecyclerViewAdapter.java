@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class FinanceItemRecyclerViewAdapter extends RecyclerView.Adapter<FinanceItemRecyclerViewAdapter.FinanceItemViewHolder> {
@@ -44,11 +45,12 @@ public class FinanceItemRecyclerViewAdapter extends RecyclerView.Adapter<Finance
     @Override
     public void onBindViewHolder(@NonNull FinanceItemViewHolder viewHolder, int i) {
         Finance currentFinance = mFinanceList.get(i);
+        NumberFormat curFormat = NumberFormat.getCurrencyInstance();
 
         viewHolder.mImageView.setImageResource(currentFinance.getImageResource());
         viewHolder.mTextViewTitle.setText(currentFinance.getTitle());
         viewHolder.mTextViewDescription.setText(currentFinance.getDescription());
-        String amount = currentFinance.getAmount() + "";
+        String amount = curFormat.format(currentFinance.getAmount());
         viewHolder.mAmountTextView.setText(amount);
 
     }

@@ -4,6 +4,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @IgnoreExtraProperties
 public class Finance {
@@ -12,12 +13,12 @@ public class Finance {
     private double amount;
     private @ServerTimestamp
     Date timeCreated;
-    private Date dueDate;
+    private List<Integer> dueDate;
     private String financeID;
     private String userUID;
     private int imageResource;
 
-    public Finance(String title, String description, double amount, Date timeCreated, Date dueDate, String financeID, String userUID, int imageResource) {
+    public Finance(String title, String description, double amount, Date timeCreated, List<Integer>dueDate, String financeID, String userUID, int imageResource) {
         this.title = title;
         this.description = description;
         this.amount = amount;
@@ -50,7 +51,7 @@ public class Finance {
         return timeCreated;
     }
 
-    public Date getDueDate() {
+    public List<Integer> getDueDate() {
         return dueDate;
     }
 
@@ -78,7 +79,7 @@ public class Finance {
         this.timeCreated = timeCreated;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(List<Integer> dueDate) {
         this.dueDate = dueDate;
     }
 

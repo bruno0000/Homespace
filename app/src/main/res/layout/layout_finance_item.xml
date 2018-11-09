@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="4dp"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="4dp">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="4dp">
 
         <android.support.v7.widget.AppCompatImageView
@@ -45,38 +46,31 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewFinanceItemTitle" />
 
         <TextView
-            android:id="@+id/textViewFinanceItemDollarSign"
+            android:id="@+id/textViewDueDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="72dp"
-            android:layout_marginBottom="8dp"
-            android:text="$"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.727" />
+            android:layout_marginStart="4dp"
+            android:text="due date/time"
+            app:layout_constraintStart_toEndOf="@+id/textViewDueDateTimeLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewDueDateTimeLabel" />
 
         <TextView
             android:id="@+id/textViewFinanceItemAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
+            android:text="amount"
+            app:layout_constraintStart_toStartOf="@+id/textViewDueDateTimeLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewDueDateTimeLabel" />
+
+        <TextView
+            android:id="@+id/textViewDueDateTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="420.69"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textViewFinanceItemDollarSign"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.727" />
+            android:text="Due Date:"
+            app:layout_constraintStart_toStartOf="@+id/textViewFinanceItemDescription"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFinanceItemDescription" />
+
     </android.support.constraint.ConstraintLayout>
-
-
 </android.support.v7.widget.CardView>
