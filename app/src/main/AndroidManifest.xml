@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main_navigation" />
+            android:label="My Homespace" />
         <activity android:name=".HomespaceActivity" />
         <activity android:name=".CalendarActivity" />
         <activity android:name=".NewTaskActivity"
