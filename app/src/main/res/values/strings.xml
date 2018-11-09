@@ -27,4 +27,5 @@
     <string name="username">username</string>
     <string name="sorry">Sorry, that feature has not been implemented yet. Ask your roommates to add you through the app.</string>
     <string name="sign_out">Sign Out</string>
+    <string name="homespace_members">Homespace Members</string>
 </resources>
