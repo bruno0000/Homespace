@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +46,25 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
                 TextView textView = findViewById(R.id.joinHomespaceTextView);
                 textView.setText(getString(R.string.sorry));
                 break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sign_out, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.signOutMenuButton: {
+                FirebaseAuth.getInstance().signOut();
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
             }
         }
     }
