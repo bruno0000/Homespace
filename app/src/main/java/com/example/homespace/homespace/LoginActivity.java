@@ -57,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mStaySignedInCheckBox = findViewById(R.id.staySignedInCheckBox);
 
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
 
         db = FirebaseFirestore.getInstance();
 
@@ -70,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mStaySignedInCheckBox.isChecked()) {
             checkUserState();
         }
+        mAuth.signOut();
 
     }
 
