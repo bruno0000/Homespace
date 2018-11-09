@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 public class MemberSelectionDialog extends DialogFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private Button mCancel, mConfirm;
-    private CheckBox mCheckBox;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -56,7 +55,6 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_member_selection, container, false);
-        mCheckBox = v.findViewById(R.id.checkBoxSelectMember);
         mCancel = v.findViewById(R.id.selectMemberDialogCancelButton);
         mConfirm = v.findViewById(R.id.selectMemberDialogConfirmButton);
         mCancel.setOnClickListener(this);
