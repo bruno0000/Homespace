@@ -88,12 +88,6 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getUsers();
-    }
-
-    @Override
     public void onRefresh() {
         getUsers();
         if (mSwipeRefreshLayout.isRefreshing()) {

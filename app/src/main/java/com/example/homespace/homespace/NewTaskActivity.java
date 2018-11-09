@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class NewTaskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -162,7 +161,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             }
             case R.id.newTaskCancelTextView: {
-                Toast.makeText(NewTaskActivity.this, "" + cal.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
                 this.finish();
                 break;
             }
