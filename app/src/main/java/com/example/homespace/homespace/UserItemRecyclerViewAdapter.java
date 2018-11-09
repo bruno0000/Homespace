@@ -14,13 +14,11 @@ public class UserItemRecyclerViewAdapter extends RecyclerView.Adapter<UserItemRe
 
     public static class UserItemViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextViewUsername;
-        public TextView mTextViewUID;
 
 
         public UserItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mTextViewUsername = itemView.findViewById(R.id.userItemUsernameTextView);
-            mTextViewUID = itemView.findViewById(R.id.userItemUIDTextView);
         }
     }
 
@@ -39,9 +37,7 @@ public class UserItemRecyclerViewAdapter extends RecyclerView.Adapter<UserItemRe
     @Override
     public void onBindViewHolder(@NonNull UserItemViewHolder userItemViewHolder, int i) {
         User currentUser = mUserList.get(i);
-
         userItemViewHolder.mTextViewUsername.setText(currentUser.getUsername());
-        userItemViewHolder.mTextViewUID.setText(currentUser.getUserUID());
     }
 
     @Override

@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,12 +35,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
     private Calendar cal;
-    private Date dateTime;
-    //private Group group;
 
     private int year, month, day, hour, minute;
-    //private int refIds[];
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,73 +86,16 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.newTaskDueDateEditText: {
-                year = cal.get(Calendar.YEAR);
-                month = cal.get(Calendar.MONTH);
-                day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(this,
-                        android.R.style.Theme_DeviceDefault_Light,
-                        mDateSetListener,
-                        year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                dialog.setCancelable(false);
-                dialog.show();
+                selectDate();
                 break;
             }
             case R.id.newTaskDueTimeEditText: {
-                TimePickerDialog dialog = new TimePickerDialog(this,
-                        android.R.style.Theme_DeviceDefault_Light,
-                        mTimeSetListener,
-                        hour, minute,
-                        DateFormat.is24HourFormat(this));
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                dialog.setCancelable(false);
-                dialog.show();
+                selectTime();
                 break;
             }
             case R.id.newTaskCreateTextView: {
                 // insert new task
-                String title = mTitle.getText().toString();
-                String description = mDescription.getText().toString();
-                List<Integer> date = new ArrayList(5);
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                DocumentReference newTaskRef = db.collection("tasks").document();
-                Task task = new Task();
-
-                if (!title.isEmpty()) {
-                    task.setTitle(title);
-                } else {
-                    mTitle.setError("Enter a title");
-                    mTitle.requestFocus();
-                    Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(!mEditDate.getText().toString().equals("") && !mEditTime.getText().toString().equals("")) {
-                    date.add(year);
-                    date.add(month);
-                    date.add(day);
-                    date.add(hour);
-                    date.add(minute);
-                    task.setDueDate(date);
-                } else {
-                    mEditDate.setError("Enter a completion date and time");
-                    Toast.makeText(this, "Enter a completion date and time", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                task.setDescription(description);
-                task.setTaskID(newTaskRef.getId());
-                task.setUserUID(FirebaseAuth.getInstance().getUid());
-
-                newTaskRef.set(task).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(NewTaskActivity.this, "New Task Saved", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(NewTaskActivity.this, "New Task Unsuccessful", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                saveTask();
                 this.finish();
                 break;
             }
@@ -171,6 +109,75 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             }
         }
+    }
+
+    private void selectDate(){
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(this,
+                android.R.style.Theme_DeviceDefault_Light,
+                mDateSetListener,
+                year,month,day);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void selectTime(){
+        TimePickerDialog dialog = new TimePickerDialog(this,
+                android.R.style.Theme_DeviceDefault_Light,
+                mTimeSetListener,
+                hour, minute,
+                DateFormat.is24HourFormat(this));
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void saveTask(){
+        String title = mTitle.getText().toString();
+        String description = mDescription.getText().toString();
+        List<Integer> date = new ArrayList(5);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference newTaskRef = db.collection("tasks").document();
+        Task task = new Task();
+
+        if (!title.isEmpty()) {
+            task.setTitle(title);
+        } else {
+            mTitle.setError("Enter a title");
+            mTitle.requestFocus();
+            Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!mEditDate.getText().toString().equals("") && !mEditTime.getText().toString().equals("")) {
+            date.add(year);
+            date.add(month);
+            date.add(day);
+            date.add(hour);
+            date.add(minute);
+            task.setDueDate(date);
+        } else {
+            mEditDate.setError("Enter a completion date and time");
+            Toast.makeText(this, "Enter a completion date and time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        task.setDescription(description);
+        task.setTaskID(newTaskRef.getId());
+        task.setUserUID(FirebaseAuth.getInstance().getUid());
+
+        newTaskRef.set(task).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(NewTaskActivity.this, "New Task Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(NewTaskActivity.this, "New Task Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 

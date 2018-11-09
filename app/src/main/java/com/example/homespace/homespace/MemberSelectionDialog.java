@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,8 +27,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class MemberSelectionDialog extends DialogFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-    private Button mCancel, mConfirm;
-    private CheckBox mCheckBox;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -49,7 +45,6 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme);
     }
 
@@ -57,9 +52,8 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_member_selection, container, false);
-        mCheckBox = v.findViewById(R.id.checkBoxSelectMember);
-        mCancel = v.findViewById(R.id.selectMemberDialogCancelButton);
-        mConfirm = v.findViewById(R.id.selectMemberDialogConfirmButton);
+        Button mCancel = v.findViewById(R.id.selectMemberDialogCancelButton);
+        Button mConfirm = v.findViewById(R.id.selectMemberDialogConfirmButton);
         mCancel.setOnClickListener(this);
         mConfirm.setOnClickListener(this);
 
@@ -81,21 +75,18 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
-        getDialog().setTitle("Assign Members");
+        getDialog().setTitle("Assign Members (Swipe down to refresh list)");
 
+        getHomespaceID();
         getUsers();
 
         return v;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getUsers();
-    }
-
-    @Override
     public void onRefresh() {
+        mUserList.clear();
+        mLastQueriedDocument = null;
         getUsers();
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -104,17 +95,13 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.selectMemberDialogCancelButton:{
+        switch (v.getId()) {
+            case R.id.selectMemberDialogCancelButton: {
                 getDialog().dismiss();
                 break;
             }
-            case R.id.selectMemberDialogConfirmButton:{
-
-                break;
-            }
-            case R.id.checkBoxSelectMember: {
-
+            case R.id.selectMemberDialogConfirmButton: {
+                getDialog().dismiss();
                 break;
             }
         }
@@ -140,7 +127,7 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
         getHomespaceID();
 
         CollectionReference usersRef = db.collection("users");
-        Query usersQuery = null;
+        Query usersQuery;
         if (mLastQueriedDocument != null) {
             usersQuery = usersRef.whereEqualTo("homespaceID", mHomespaceID)
                     .startAfter(mLastQueriedDocument); // for no duplicates on refresh

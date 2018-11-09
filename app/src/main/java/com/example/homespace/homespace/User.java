@@ -9,15 +9,13 @@ import java.util.Date;
 public class User {
     private String username;
     private String userUID;
-    private String userID;
     private String homespaceID;
     private @ServerTimestamp
     Date timeCreated;
 
-    public User(String username, String userUID, String userID, String homespaceID, Date timeCreated) {
+    public User(String username, String userUID, String homespaceID, Date timeCreated) {
         this.username = username;
         this.userUID = userUID;
-        this.userID = userID;
         this.homespaceID = homespaceID;
         this.timeCreated = timeCreated;
     }
@@ -37,10 +35,6 @@ public class User {
         this.userUID = userUID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
     public void setHomespaceID(String homespaceID) {
         this.homespaceID = homespaceID;
     }
@@ -51,10 +45,6 @@ public class User {
 
     public String getUserUID() {
         return userUID;
-    }
-
-    public String getUserID() {
-        return userID;
     }
 
     public String getHomespaceID() {

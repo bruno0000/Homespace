@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home, null);
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
         mSignOut = v.findViewById(R.id.signOutButton);
         mSignOut.setOnClickListener(this);
 
@@ -88,6 +88,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
 
     @Override
     public void onRefresh() {
+        mUserList.clear();
+        mLastQueriedDocument = null;
         getUsers();
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -112,7 +114,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
         getHomespaceID();
 
         CollectionReference usersRef = db.collection("users");
-        Query usersQuery = null;
+        Query usersQuery;
         if (mLastQueriedDocument != null) {
             usersQuery = usersRef.whereEqualTo("homespaceID", mHomespaceID)
                     .startAfter(mLastQueriedDocument); // for no duplicates on refresh
@@ -199,9 +201,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Swip
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "homespace userList update successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "homespace user list update successful", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getActivity(), "homespace userList update unsuccessful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "homespace user list update unsuccessful", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

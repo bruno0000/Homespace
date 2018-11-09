@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,11 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomespaceActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String KEY_HOMESPACE_ID = "homespaceID";
     private final String LOG = "HomespaceActivity";
-
-    private static final String KEY_HOMESPACE_NAME = "homespaceName";
-    private static final String KEY_HOMESPACE_CREATOR = "homespaceCreator";
 
     private EditText mEditTextName;
 
@@ -48,7 +42,7 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void saveHomespace() {
-        String name = mEditTextName.getText().toString();
+        String name = mEditTextName.getText().toString().trim();
         String creatorUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,20 +60,6 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         userList.add(creatorUID);
         homespace.setUserList(userList);
 
-        // update current user's document to have this homespace's ID for data modeling
-        db.collection("users").document(creatorUID)
-                .update("homespaceID", homespaceID)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(HomespaceActivity.this, "user homespaceID updated", Toast.LENGTH_SHORT).show();
-                        } else {
-
-                        }
-                    }
-                });
-
         // add new homespace to DB
         homespaceRef.set(homespace)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -89,7 +69,21 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
                             Toast.makeText(HomespaceActivity.this, "Homespace Saved", Toast.LENGTH_SHORT).show();
                             startMainActivity();
                         } else {
+                            Toast.makeText(HomespaceActivity.this, "Failed to save Homespace", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
+        // update current user's document to have this homespace's ID
+        db.collection("users").document(creatorUID)
+                .update("homespaceID", homespaceID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(HomespaceActivity.this, "User Homespace Updated", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(HomespaceActivity.this, "Failed to update user Homespace", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -101,6 +95,4 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         startActivity(intent);
 
     }
-
-
 }

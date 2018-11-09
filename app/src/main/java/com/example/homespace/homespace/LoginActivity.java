@@ -26,21 +26,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    private final String TAG = "LoginActivity";
 
     private EditText mEditTextUsername, mEditTextPassword, mEditTextConfirmPW;
     private ProgressBar mProgressBarLogin;
     private TextView mTextViewShowLogin, mTextViewShowRegister;
-    private CheckBox mStaySignedInCheckBox;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private final String FAKE_EMAIL_DOMAIN = "@homespace.users";
-    private final String TAG = "LoginActivity";
-    private final String KEY_USERNAME = "username";
-    private final String KEY_USER_ID = "userID";
-    private final String KEY_USER_UID = "userUID";
-    private final String KEY_HOMESPACE_ID = "homespaceID";
+    private final String EMAIL_DOMAIN = "@homespace.users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +49,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEditTextConfirmPW = findViewById(R.id.confirmPasswordEditText);
         mTextViewShowLogin = findViewById(R.id.returningUserTextView);
         mTextViewShowRegister = findViewById(R.id.signUpTextView);
-        mStaySignedInCheckBox = findViewById(R.id.staySignedInCheckBox);
+        CheckBox mStaySignedInCheckBox = findViewById(R.id.staySignedInCheckBox);
 
         mAuth = FirebaseAuth.getInstance();
-
         db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.loginButton).setOnClickListener(this);
@@ -69,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (mStaySignedInCheckBox.isChecked()) {
             checkUserState();
         }
-
     }
 
     @Override
@@ -98,8 +91,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void createUser() {
-        // Note fake domain concatenation
-        final String username = mEditTextUsername.getText().toString().trim();// + FAKE_EMAIL_DOMAIN;
+        // Note fake domain concatenation so users don't require to use a fake email as username
+        final String username = mEditTextUsername.getText().toString().trim() + EMAIL_DOMAIN;
         final String password = mEditTextPassword.getText().toString().trim();
         final String passwordConfirm = mEditTextConfirmPW.getText().toString().trim();
 
@@ -186,6 +179,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mProgressBarLogin.setVisibility(View.VISIBLE);
 
+        username += EMAIL_DOMAIN;
+
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -205,7 +200,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void verifyHomespace() {
         final String userID = FirebaseAuth.getInstance().getUid();
         CollectionReference reference = db.collection("homespaces");
-        Query userListQuery = null;
+        Query userListQuery;
         if (userID != null) {
             userListQuery = reference.whereArrayContains("userList", userID);
             userListQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

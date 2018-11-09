@@ -5,10 +5,10 @@ import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -17,7 +17,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,6 +54,7 @@ public class NewFinanceActivity extends AppCompatActivity implements View.OnClic
         mCreate.setOnClickListener(this);
         mEditDate.setOnClickListener(this);
         mEditTime.setOnClickListener(this);
+        findViewById(R.id.newFinanceMembersButton).setOnClickListener(this);
 
         cal = Calendar.getInstance();
 
@@ -87,85 +87,15 @@ public class NewFinanceActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.newFinanceDueDateEditText: {
-                year = cal.get(Calendar.YEAR);
-                month = cal.get(Calendar.MONTH);
-                day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(this,
-                        android.R.style.Theme_DeviceDefault_Light,
-                        mDateSetListener,
-                        year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                dialog.setCancelable(false);
-                dialog.show();
+                selectDate();
                 break;
             }
             case R.id.newFinanceDueTimeEditText: {
-                TimePickerDialog dialog = new TimePickerDialog(this,
-                        android.R.style.Theme_DeviceDefault_Light,
-                        mTimeSetListener,
-                        hour, minute,
-                        DateFormat.is24HourFormat(this));
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                dialog.setCancelable(false);
-                dialog.show();
+                selectTime();
                 break;
             }
             case R.id.newFinanceCreateTextView: {
-                String title = mTitle.getText().toString();
-                String description = mDescription.getText().toString();
-                List<Integer> date = new ArrayList(5);
-                double amount = 0;
-
-                if (!mAmount.getText().toString().isEmpty()){
-                    amount = Double.parseDouble(mAmount.getText().toString());
-                } else {
-                    mAmount.setError("Enter an amount");
-                    mAmount.requestFocus();
-                    Toast.makeText(this, "Enter an amount", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                DocumentReference newFinanceRef = db.collection("finances").document();
-                Finance finance = new Finance();
-
-                if (!title.isEmpty()) {
-                    finance.setTitle(title);
-                } else {
-                    mTitle.setError("Enter a title");
-                    mTitle.requestFocus();
-                    Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(!mEditDate.getText().toString().equals("") && !mEditTime.getText().toString().equals("")) {
-                    date.add(year);
-                    date.add(month);
-                    date.add(day);
-                    date.add(hour);
-                    date.add(minute);
-                    finance.setDueDate(date);
-                } else {
-                    mEditDate.setError("Enter a completion date and time");
-                    Toast.makeText(this, "Enter a completion date and time", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                finance.setAmount(amount);
-                finance.setDescription(description);
-                finance.setFinanceID(newFinanceRef.getId());
-                finance.setUserUID(FirebaseAuth.getInstance().getUid());
-
-                newFinanceRef.set(finance).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(NewFinanceActivity.this, "New Finance Saved", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(NewFinanceActivity.this, "New Finance Unsuccessful", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                saveFinance();
                 this.finish();
                 break;
             }
@@ -173,6 +103,93 @@ public class NewFinanceActivity extends AppCompatActivity implements View.OnClic
                 this.finish();
                 break;
             }
+            case R.id.newFinanceMembersButton: {
+                DialogFragment memberSelectionDialog = new MemberSelectionDialog();
+                memberSelectionDialog.show(getSupportFragmentManager(),"Select Members");
+                break;
+            }
         }
+    }
+
+    private void selectDate() {
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(this,
+                android.R.style.Theme_DeviceDefault_Light,
+                mDateSetListener,
+                year,month,day);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void selectTime(){
+        TimePickerDialog dialog = new TimePickerDialog(this,
+                android.R.style.Theme_DeviceDefault_Light,
+                mTimeSetListener,
+                hour, minute,
+                DateFormat.is24HourFormat(this));
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void saveFinance(){
+        String title = mTitle.getText().toString();
+        String description = mDescription.getText().toString();
+        List<Integer> date = new ArrayList(5);
+        double amount;
+
+        if (!mAmount.getText().toString().isEmpty()){
+            amount = Double.parseDouble(mAmount.getText().toString());
+        } else {
+            mAmount.setError("Enter an amount");
+            mAmount.requestFocus();
+            Toast.makeText(this, "Enter an amount", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference newFinanceRef = db.collection("finances").document();
+        Finance finance = new Finance();
+
+        if (!title.isEmpty()) {
+            finance.setTitle(title);
+        } else {
+            mTitle.setError("Enter a title");
+            mTitle.requestFocus();
+            Toast.makeText(this, "Enter a title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!mEditDate.getText().toString().equals("") && !mEditTime.getText().toString().equals("")) {
+            date.add(year);
+            date.add(month);
+            date.add(day);
+            date.add(hour);
+            date.add(minute);
+            finance.setDueDate(date);
+        } else {
+            mEditDate.setError("Enter a completion date and time");
+            Toast.makeText(this, "Enter a completion date and time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        finance.setAmount(amount);
+        finance.setDescription(description);
+        finance.setFinanceID(newFinanceRef.getId());
+        finance.setUserUID(FirebaseAuth.getInstance().getUid());
+
+        newFinanceRef.set(finance).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                if (task.isSuccessful()){
+                    Toast.makeText(NewFinanceActivity.this, "New Finance Saved", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(NewFinanceActivity.this, "New Finance Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

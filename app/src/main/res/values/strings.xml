@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Homespace</string>
-    <string name="enter_password">enter password...</string>
-    <string name="enter_username">enter username...</string>
+    <string name="enter_password">enter password…</string>
+    <string name="enter_username">enter username…</string>
     <string name="login">Login</string>
     <string name="title_activity_main_navigation">MainNavigationActivity</string>
     <string name="title_home">Home</string>
@@ -24,4 +24,5 @@
     <string name="home_title">Home</string>
     <string name="sign_out_button_text">Sign Out</string>
     <string name="add_member">Add Member</string>
+    <string name="username">username</string>
 </resources>
