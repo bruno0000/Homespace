@@ -21,8 +21,10 @@
             android:label="@string/title_activity_main_navigation" />
         <activity android:name=".HomespaceActivity" />
         <activity android:name=".CalendarActivity" />
-        <activity android:name=".NewTaskActivity" />
-        <activity android:name=".NewFinanceActivity"></activity>
+        <activity android:name=".NewTaskActivity"
+            android:label="New Task"/>
+        <activity android:name=".NewFinanceActivity"
+            android:label="New Finance"></activity>
     </application>
 
 </manifest>
