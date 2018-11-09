@@ -28,4 +28,27 @@
     <string name="sorry">Sorry, that feature has not been implemented yet. Ask your roommates to add you through the app.</string>
     <string name="sign_out">Sign Out</string>
     <string name="homespace_members">Homespace Members</string>
+    <string name="register">Register</string>
+    <string name="confirm_pw">confirm password…</string>
+    <string name="returning_tap_here">Returning to Homespace? Tap here to sign in!</string>
+    <string name="not_registered_tap_here">Not registered? Tap here to sign up!</string>
+    <string name="stay_signed_in">Stay signed in?</string>
+    <string name="finance_title">Finance title…</string>
+    <string name="finance_description">Finance description…</string>
+    <string name="finance_amount_0_00">Finance Amount $(0.00)</string>
+    <string name="completion_date">Completion date:</string>
+    <string name="completion_time">Completion time:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="assign_to">Assign to:</string>
+    <string name="members">Members</string>
+    <string name="task_title">Task title…</string>
+    <string name="task_description">Task description…</string>
+    <string name="confirm">Confirm</string>
+    <string name="amount">amount</string>
+    <string name="checkbox">CheckBox</string>
+    <string name="description_here">description here</string>
+    <string name="due_date_time">due date/time</string>
+    <string name="due_date">Due Date:</string>
+    <string name="title">Title</string>
 </resources>

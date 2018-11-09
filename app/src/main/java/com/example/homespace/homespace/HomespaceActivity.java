@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,9 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomespaceActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String LOG = "HomespaceActivity";
+    private final String TAG = "HomespaceActivity";
 
     private EditText mEditTextName;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,23 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         mEditTextName = findViewById(R.id.nameHomespaceEditText);
         findViewById(R.id.nameHomespaceButton).setOnClickListener(this);
         findViewById(R.id.joinHomespaceTextView).setOnClickListener(this);
+
+        mAuth = FirebaseAuth.getInstance();
+        setupFirebaseListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     @Override
@@ -122,5 +143,25 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
+    }
+
+
+    private void setupFirebaseListener() {
+        Log.d(TAG, "setupFirebaseListener: setting up the auth state listener");
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    Log.d(TAG, "onAuthStateChanged: signed_in " + user.getUid());
+                } else {
+                    Log.d(TAG, "onAuthStateChanged: signed_out");
+                    Toast.makeText(HomespaceActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(HomespaceActivity.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            }
+        };
     }
 }
