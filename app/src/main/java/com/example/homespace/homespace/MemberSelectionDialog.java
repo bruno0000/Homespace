@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -104,17 +103,13 @@ public class MemberSelectionDialog extends DialogFragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.selectMemberDialogCancelButton:{
+        switch (v.getId()) {
+            case R.id.selectMemberDialogCancelButton: {
                 getDialog().dismiss();
                 break;
             }
-            case R.id.selectMemberDialogConfirmButton:{
-
-                break;
-            }
-            case R.id.checkBoxSelectMember: {
-
+            case R.id.selectMemberDialogConfirmButton: {
+                getDialog().dismiss();
                 break;
             }
         }

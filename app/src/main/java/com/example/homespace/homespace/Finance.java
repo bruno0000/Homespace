@@ -28,7 +28,8 @@ public class Finance {
         this.imageResource = imageResource;
     }
 
-    public Finance(){}
+    public Finance() {
+    }
 
     public double getAmount() {
         return amount;

@@ -21,11 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomespaceActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String KEY_HOMESPACE_ID = "homespaceID";
     private final String LOG = "HomespaceActivity";
-
-    private static final String KEY_HOMESPACE_NAME = "homespaceName";
-    private static final String KEY_HOMESPACE_CREATOR = "homespaceCreator";
 
     private EditText mEditTextName;
 

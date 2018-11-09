@@ -35,12 +35,12 @@ public class NewFinanceActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.newFinanceCreateTextView: {
                 String title = mTitle.getText().toString();
                 String description = mDescription.getText().toString();
                 double amount = 0;
-                if (!mAmount.getText().toString().isEmpty()){
+                if (!mAmount.getText().toString().isEmpty()) {
                     amount = Double.parseDouble(mAmount.getText().toString());
                 } else {
                     mAmount.setError("Enter an amount");
@@ -70,7 +70,7 @@ public class NewFinanceActivity extends AppCompatActivity implements View.OnClic
                 newFinanceRef.set(finance).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             Toast.makeText(NewFinanceActivity.this, "New Finance Saved", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(NewFinanceActivity.this, "New Finance Unsuccessful", Toast.LENGTH_SHORT).show();

@@ -36,11 +36,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
     private Calendar cal;
-    private Date dateTime;
-    //private Group group;
 
     private int year, month, day, hour, minute;
-    //private int refIds[];
 
 
     @Override

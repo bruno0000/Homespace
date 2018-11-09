@@ -23,7 +23,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class TaskFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -32,7 +31,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Swip
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Calendar cal;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private DocumentSnapshot mLastQueriedDocument;
 
@@ -77,7 +75,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Swip
         switch (v.getId()) {
             case R.id.newTaskFloatingActionButton: {
                 Intent intent = new Intent(getActivity(), NewTaskActivity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 break;
             }

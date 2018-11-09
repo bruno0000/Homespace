@@ -37,10 +37,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private final String FAKE_EMAIL_DOMAIN = "@homespace.users";
     private final String TAG = "LoginActivity";
-    private final String KEY_USERNAME = "username";
-    private final String KEY_USER_ID = "userID";
-    private final String KEY_USER_UID = "userUID";
-    private final String KEY_HOMESPACE_ID = "homespaceID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

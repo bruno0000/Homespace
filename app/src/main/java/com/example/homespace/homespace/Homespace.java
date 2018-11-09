@@ -16,7 +16,8 @@ public class Homespace {
         this.userList = userList;
     }
 
-    public Homespace(){}
+    public Homespace() {
+    }
 
     public List<String> getUserList() {
         return userList;

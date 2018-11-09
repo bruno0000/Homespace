@@ -58,25 +58,25 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
         List<Integer> dueDateList = currentTask.getDueDate();
         StringBuffer dueDateDisplay = new StringBuffer();
         int dateTimeIndex = 0;
-        for(Integer item : dueDateList) {
-            switch(dateTimeIndex) {
-                case(0) : {
+        for (Integer item : dueDateList) {
+            switch (dateTimeIndex) {
+                case (0): {
                     cal.set(Calendar.YEAR, item);
                     break;
                 }
-                case(1) : {
+                case (1): {
                     cal.set(Calendar.MONTH, item);
                     break;
                 }
-                case(2) : {
+                case (2): {
                     cal.set(Calendar.DAY_OF_MONTH, item);
                     break;
                 }
-                case(3) : {
+                case (3): {
                     cal.set(Calendar.HOUR, item);
                     break;
                 }
-                case(4) : {
+                case (4): {
                     cal.set(Calendar.MINUTE, item);
                     break;
                 }
@@ -89,7 +89,7 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
         taskItemViewHolder.mImageView.setImageResource(currentTask.getImageResource());
         taskItemViewHolder.mTextViewTitle.setText(currentTask.getTitle());
 
-        
+
         taskItemViewHolder.mTextViewDescription.setText(currentTask.getDescription());
         taskItemViewHolder.mTextViewDueDateTime.setText(dueDateDisplay);
 
