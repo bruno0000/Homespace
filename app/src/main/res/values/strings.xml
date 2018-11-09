@@ -25,4 +25,5 @@
     <string name="sign_out_button_text">Sign Out</string>
     <string name="add_member">Add Member</string>
     <string name="username">username</string>
+    <string name="sorry">Sorry, that feature has not been implemented yet. Ask your roommates to add you through the app.</string>
 </resources>

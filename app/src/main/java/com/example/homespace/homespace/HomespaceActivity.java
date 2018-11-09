@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_homespace);
         mEditTextName = findViewById(R.id.nameHomespaceEditText);
         findViewById(R.id.nameHomespaceButton).setOnClickListener(this);
+        findViewById(R.id.joinHomespaceTextView).setOnClickListener(this);
     }
 
     @Override
@@ -36,6 +38,11 @@ public class HomespaceActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.nameHomespaceButton: {
                 saveHomespace();
+                break;
+            }
+            case R.id.joinHomespaceTextView: {
+                TextView textView = findViewById(R.id.joinHomespaceTextView);
+                textView.setText(getString(R.string.sorry));
                 break;
             }
         }
