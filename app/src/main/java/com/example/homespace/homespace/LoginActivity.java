@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             checkUserState();
         }
 
-
+        mAuth.signOut();
     }
 
     @Override
