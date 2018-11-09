@@ -54,7 +54,7 @@ public class TaskItemRecyclerViewAdapter extends RecyclerView.Adapter<TaskItemRe
         Task currentTask = mTaskList.get(i);
         Calendar cal = Calendar.getInstance();
         Date date;
-        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd, 'at' hh:mm", Locale.getDefault());
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd, 'at' hh:mm a", Locale.getDefault());
         List<Integer> dueDateList = currentTask.getDueDate();
         StringBuffer dueDateDisplay = new StringBuffer();
         int dateTimeIndex = 0;
